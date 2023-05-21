@@ -32,7 +32,7 @@ MoistureLevel HydrateMonitor::evaluteMoistureLevel(uint16_t moisture_value){
   }
   else if (moisture_value > MOISTURE_MAX)
   {
-    Serial.println(F("Moisture Sensor is unexpectatly moist!"));
+    Serial.println(F("Moisture Sensor returns unexpectatly value!"));
     temp_level = UNEXPECTED_VALUE;
     in_error = true;
   }
@@ -61,7 +61,7 @@ uint16_t HydrateMonitor::readMoistureValue(){
 
   Serial.print(F("Moisture Sensor: "));
   Serial.println(String(moiture_value));
-  
+
   return moiture_value;
 }
 
@@ -89,8 +89,9 @@ String HydrateMonitor::moistureLevelToString(MoistureLevel moisture_level){
         break;
 
     case UNEXPECTED_VALUE:
-        return F("Too High!");
+        return F("Unexpected!");
         break;
+
     default:
         return F("Not defined");
         break;

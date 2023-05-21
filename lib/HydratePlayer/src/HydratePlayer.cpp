@@ -22,7 +22,7 @@ void HydratePlayer::begin() {
 }
 
 void HydratePlayer::printStatus(uint8_t type, int value){
-  switch (type) {
+  switch (type) { 
     case TimeOut:
       Serial.println(F("Time Out!"));
       break;
