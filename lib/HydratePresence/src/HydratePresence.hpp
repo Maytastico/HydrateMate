@@ -10,14 +10,17 @@ struct PresenceValue{
 
 class HydratePresence {
 public:
-  HydratePresence(uint8_t sensorPin);
+  HydratePresence(uint8_t movement_sensor_pin);
   void begin();
-  bool isPersonPresent();
   bool isPersonMoving();
+  uint32_t getTimeOfLastMeasurement();
 
 private:
   uint8_t movement_sensor_pin;
   PresenceValue measurement;
+
+  void storeMeasurement(uint8_t movement_sensor_value);
+  uint8_t readMovementSensorValue();
 };
 
 #endif  // HYDRATE_PRESENCE_HPP
