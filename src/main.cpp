@@ -1,22 +1,21 @@
 #include <Arduino.h>
-#include <DFRobotDFPlayerMini.h>
-#include <SoftwareSerial.h>
+#include <HydratePlayer.hpp>
+#include <HydrateMonitor.hpp>
 
-// Inizializing Serial Communication for DFPlayer
-SoftwareSerial df_player_serial(10, 11)
-// put function declarations here:
-int myFunction(int, int);
+
+HydratePlayer player(10,11);
+HydrateMonitor plant_monitor(A1, 9);
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(115200);
+
+  player.begin();
+
+  plant_monitor.begin();
+
+  plant_monitor.readMoistureLevel();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  
 }
