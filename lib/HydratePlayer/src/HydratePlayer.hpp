@@ -9,9 +9,10 @@ class HydratePlayer {
 public:
   HydratePlayer(uint8_t rxPin, uint8_t txPin); // Konstruktor hinzugefügt
   void begin();
-  void playTrack(uint8_t trackNumber);
+  void playTrack(uint16_t trackNumber);
   void stop();
   void loop();
+  bool isPlaying();
 
 private:
   SoftwareSerial dfPlayerSerial; // SoftwareSerial-Instanz hinzugefügt

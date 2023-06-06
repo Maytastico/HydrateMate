@@ -14,10 +14,11 @@ public:
   void begin();
   bool isPersonMoving();
   uint32_t getTimeOfLastMeasurement();
+  PresenceValue measurement;
 
 private:
   uint8_t movement_sensor_pin;
-  PresenceValue measurement;
+  
 
   void storeMeasurement(uint8_t movement_sensor_value);
   uint8_t readMovementSensorValue();

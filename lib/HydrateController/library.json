@@ -1,0 +1,35 @@
+{
+"name": "HydrateController",
+"version": "1.0.0",
+"description": "Library for managing the monitoring, control and automation of the HydrateMate project.",
+"keywords": [
+    "plant",
+    "dfplayer",
+    "HydrateMate",
+    "IoT"
+  ],
+  "frameworks": {
+    "arduino": {
+      "required": true
+    }
+  },
+  "platforms": [
+    "espressif8266",
+    "espressif32"
+  ],
+  "authors": [
+    {
+      "name": "Maytastico",
+      "email": "maytastico@hotmail.com"
+    }
+  ],
+  "homepage": "https://github.com/Maytastico/HydrateMate",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Maytastico/HydrateMate"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dfrobot/DFRobotDFPlayerMini": "1.0.5"
+  }
+} 

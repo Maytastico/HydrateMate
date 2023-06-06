@@ -20,7 +20,7 @@ boolean HydratePresence::isPersonMoving(){
 }
 
 uint8_t HydratePresence::readMovementSensorValue(){
-    Serial.println(F("Reading Movement Sensor"));
+  Serial.println(F("Reading Movement Sensor"));
   return digitalRead(this->movement_sensor_pin);
 }
 

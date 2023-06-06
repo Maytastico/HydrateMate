@@ -1,5 +1,42 @@
 #include "HydrateMonitor.hpp"
 
+namespace hydrate_monitor
+{
+  String HydrateMonitor::moistureLevelToString(hydrate_monitor::MoistureLevel moisture_level){
+    switch (moisture_level)
+    {
+    case hydrate_monitor::NULL_VALUE:
+      return F("In Air");
+      break;
+
+    case hydrate_monitor::DRY:
+        return F("Dry!");
+        break;
+    
+    case hydrate_monitor::SOME_WATER:
+        return F("Some Water");
+        break;
+    
+    case hydrate_monitor::OPTIMAL:
+        return F("Optimal");
+        break;
+
+    case hydrate_monitor::TO_MOIST:
+        return F("Too moist!");
+        break;
+
+    case hydrate_monitor::UNEXPECTED_VALUE:
+        return F("Unexpected!");
+        break;
+
+    default:
+        return F("Not defined");
+        break;
+    }
+}
+} // namespace hydrate_monitor
+
+
 HydrateMonitor::HydrateMonitor(
   uint8_t moisture_sensor_pin, 
   uint8_t moisture_sensor_control_pin){
@@ -7,6 +44,7 @@ HydrateMonitor::HydrateMonitor(
   this->moisture_sensor_pin = moisture_sensor_pin;
   this->moisture_sensor_control_pin = moisture_sensor_control_pin;
 }
+
 
 void HydrateMonitor::begin(){
   pinMode(this->moisture_sensor_pin, INPUT);
@@ -65,36 +103,3 @@ uint16_t HydrateMonitor::readMoistureValue(){
   return moiture_value;
 }
 
-String HydrateMonitor::moistureLevelToString(MoistureLevel moisture_level){
-    switch (moisture_level)
-    {
-    case NULL_VALUE:
-      return F("In Air");
-      break;
-
-    case DRY:
-        return F("Dry!");
-        break;
-    
-    case SOME_WATER:
-        return F("Some Water");
-        break;
-    
-    case OPTIMAL:
-        return F("Optimal");
-        break;
-
-    case TO_MOIST:
-        return F("Too moist!");
-        break;
-
-    case UNEXPECTED_VALUE:
-        return F("Unexpected!");
-        break;
-
-    default:
-        return F("Not defined");
-        break;
-    }
-
-}
