@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h> // SoftwareSerial-Bibliothek hinzufügen
-#include <DFRobotDFPlayerMini.h>
+#include <DFPlayerMini_Fast.h>
 
 class HydratePlayer {
 public:
@@ -12,11 +12,10 @@ public:
   void playTrack(uint8_t trackNumber);
   void stop();
   void loop();
-  void printStatus(uint8_t type, int value);
 
 private:
   SoftwareSerial dfPlayerSerial; // SoftwareSerial-Instanz hinzugefügt
-  DFRobotDFPlayerMini dfplayer;
+  DFPlayerMini_Fast dfplayer;
 };
 
 #endif  // HYDRATEPLAYER_HPP
