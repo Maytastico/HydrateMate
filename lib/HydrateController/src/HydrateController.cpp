@@ -2,6 +2,10 @@
 
 namespace PlantStates
 {
+
+/**
+ * @brief Convert MonitoringStates to String
+*/
   String state_to_string(MonitoringStates state){
     switch (state) {
       case INIT:
@@ -24,7 +28,13 @@ namespace PlantStates
   }
 } // namespace Pla
 
-
+/**
+ * @brief Initialize the controller
+ * 
+ * @param p_hydration_player Pointer to dfplayer
+ * @param p_hydration_monitor Pointer to the moiture sensor
+ * @param p_hydration_presence Pointer to the movement sensor
+*/
 void HydrateController::begin(HydratePlayer *p_hydration_player, HydrateMonitor *p_hydration_monitor, HydratePresence *p_hydration_presence){
     this->p_hydration_player = p_hydration_player;
     this->p_hydration_monitor = p_hydration_monitor;
@@ -33,11 +43,16 @@ void HydrateController::begin(HydratePlayer *p_hydration_player, HydrateMonitor 
     debug_timer.begin(PlantStates::DEBUG_TIME);
 }
 
+/**
+ * @brief Is part of the state machine and is triggered by the main loop when the system is in monitoring state
+ * and the hydrate timer is finished. It checks the value of the moiture sensor and decides if the user needs to be notified.
+ * When everything is fine it restarts the hydrate timer.
+*/
 void HydrateController::on_hydrate_timer_finished(){
     Serial.println(F("Hydrate timer finished"));
-    if(p_hydration_monitor->readMoistureLevel() == NULL_VALUE  ||
-    p_hydration_monitor->readMoistureLevel() == DRY ||
-    p_hydration_monitor->readMoistureLevel()== SOME_WATER){
+    if(p_hydration_monitor->readMoistureLevel() == hydrate_monitor::NULL_VALUE  ||
+    p_hydration_monitor->readMoistureLevel() == hydrate_monitor::DRY ||
+    p_hydration_monitor->readMoistureLevel()== hydrate_monitor::SOME_WATER){
         state = PlantStates::PRESENCE;
         presence_timer.start();
     }else{
@@ -45,6 +60,11 @@ void HydrateController::on_hydrate_timer_finished(){
     }
 }
 
+/**
+ * @brief Is part of the state machine and is triggered by the main loop when the system is in presence state
+ * it will check every two seconds if the user is still present. If the user is still present it will trigger the on_presence_detected.
+ * If the user is not present it will restart the presence timer.
+*/
 void HydrateController::on_precence_timer_finished(){
     Serial.println(F("Presence timer finished"));
     if(p_hydration_presence->isPersonMoving()){
@@ -54,12 +74,20 @@ void HydrateController::on_precence_timer_finished(){
     }
 }
 
+/**
+ * @brief Is part of the state machine and is triggered by the main loop when the system is in presence state
+ * and the movement sensor detects movement. It will play the notification sound and set the state to NOTIFING.
+*/
 void HydrateController::on_presence_detected(){
     Serial.println(F("Presence detected"));
     p_hydration_player->playTrack(1);
     state = PlantStates::NOTIFING;
 }
 
+/**
+ * @brief Is part of the state machine and is triggered by the main loop when the system is in notifing state.
+ * It will check every 500ms if the player is still playing. If the player is still playing it will restart the player polling timer.
+*/
 void HydrateController::on_notify(){
     Serial.println(F("Notify finished"));
     if(p_hydration_player->isPlaying()){
@@ -69,19 +97,26 @@ void HydrateController::on_notify(){
     }
 }
 
+/**
+ * @brief Is part of the state machine and is triggered by the main loop when the system is in notifing state.
+ * When the player is finished it will set the state to MONITORING and restart the hydrate timer.
+*/
 void HydrateController::on_player_finished(){
     Serial.println(F("Player finished"));
     state = PlantStates::MONITORING;
     hydrate_timer.start();
 }
 
+/**
+ * @brief This function is used to print the internal values of the controller to the serial monitor.
+*/
 void HydrateController::print_state(){
     Serial.print(F("Controller: \nState:"));
     Serial.println(PlantStates::state_to_string(state));
     if(state == PlantStates::MONITORING){
         Serial.print(F("Moisture: "));
         Serial.print(F("MoistureLevel: "));
-        Serial.println(p_hydration_monitor->plant_value.moisture_level);
+        Serial.println(hydrate_monitor::moistureLevelToString(p_hydration_monitor->plant_value.moisture_level));
         Serial.print(F("MoistureValue: "));
         Serial.println(p_hydration_monitor->plant_value.moisture_value);
     }else if(state == PlantStates::PRESENCE){
@@ -96,12 +131,17 @@ void HydrateController::print_state(){
     }
 }
 
+/**
+ * @brief This function decides what to do based on the current state of the controller.
+ * And is called by the main loop of the program. It will also print the state of the controller to the serial monitor.
+*/
 void HydrateController::loop(){
     switch (state) {
         case PlantStates::INIT:
             //This is the first state of the where the timer is set to start the monitoring
             presence_timer.begin(PlantStates::PRESENCE_TIME);
             hydrate_timer.begin(PlantStates::MONITORING_TIME);
+            player_polling_timer.begin(PlantStates::PLAYER_POLLING_TIME);
             hydrate_timer.start();
             presence_timer.start();
 

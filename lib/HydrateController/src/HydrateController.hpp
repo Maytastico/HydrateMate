@@ -14,6 +14,7 @@ namespace PlantStates{
 
   const int32_t MONITORING_TIME = 120000;
   const int32_t PRESENCE_TIME = 2000;
+  const int32_t PLAYER_POLLING_TIME = 500;
 
   const int32_t DEBUG_TIME = 1000;
 

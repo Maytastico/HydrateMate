@@ -28,4 +28,5 @@ void setup() {
 
 void loop() {
   hydrate_controller.loop();
+  player.loop();
 }

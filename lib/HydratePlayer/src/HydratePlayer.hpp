@@ -5,6 +5,8 @@
 #include <SoftwareSerial.h> // SoftwareSerial-Bibliothek hinzufügen
 #include <DFPlayerMini_Fast.h>
 
+#define DFPLAYER_VOLUME 100
+
 class HydratePlayer {
 public:
   HydratePlayer(uint8_t rxPin, uint8_t txPin); // Konstruktor hinzugefügt
