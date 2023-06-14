@@ -42,3 +42,5 @@ cmake-build-uno
 CMakeLists.txt
 CMakeListsPrivate.txt
 .idea
+.trunk
+.vscode
