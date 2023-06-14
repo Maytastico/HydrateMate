@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h> // SoftwareSerial-Bibliothek hinzufügen
 #include <DFPlayerMini_Fast.h>
+#include <cmdArduino.h>
 
 #define DFPLAYER_VOLUME 100
 
@@ -15,10 +16,12 @@ public:
   void stop();
   void loop();
   bool isPlaying();
+  static void serialHandler(int argCnt, char **args);
 
 private:
+
   SoftwareSerial dfPlayerSerial; // SoftwareSerial-Instanz hinzugefügt
-  DFPlayerMini_Fast dfplayer;
+  static DFPlayerMini_Fast dfplayer;
 };
 
 #endif  // HYDRATEPLAYER_HPP

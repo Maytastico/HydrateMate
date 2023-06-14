@@ -42,6 +42,7 @@ namespace hydrate_monitor
 /**
  * 
  * @brief Constructor for HydrateMonitor
+ * HydraMonitor is responsible for reading the moisture value from the sensor and evaluating the moisture level.
  * @param moisture_sensor_pin Pin for moisture sensor
  * @param moisture_sensor_control_pin Pin for moisture sensor control
  * 

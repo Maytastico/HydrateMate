@@ -26,10 +26,50 @@ namespace PlantStates
     }
     return F("UNKNOWN");
   }
-} // namespace Pla
+} // namespace PlantStates
+
+HydrateController *HydrateController::p_hydration_controller = nullptr;
+
+void HydrateController::serialHandler(int argCnt, char **args){
+  if(p_hydration_controller != nullptr){
+    if(strcmp(args[1], "s") == 0){
+        p_hydration_controller->print_state();
+    }
+    else if (strcmp(args[1], "r") == 0)
+    {
+        p_hydration_controller->p_hydration_monitor->readMoistureLevel();
+        p_hydration_controller->print_state();
+    }
+    else if (strcmp(args[1], "presence") == 0)
+    {   
+        p_hydration_controller->set_state(PlantStates::PRESENCE);
+        Serial.println(F("Presence"));
+    }
+    else if (strcmp(args[1], "init") == 0)
+    {   
+        p_hydration_controller->set_state(PlantStates::INIT);
+        Serial.println(F("Init"));
+    }
+    else if (strcmp(args[1], "notify") == 0)
+    {   
+        p_hydration_controller->set_state(PlantStates::NOTIFING);
+        Serial.println(F("Notify"));
+    }
+    else if (strcmp(args[1], "monitor") == 0)
+    {   
+        p_hydration_controller->set_state(PlantStates::MONITORING);
+        Serial.println(F("Monitor"));
+    }
+    else if (strcmp(args[1], "sleep") == 0)
+    {   
+        p_hydration_controller->set_state(PlantStates::SLEEP);
+        Serial.println(F("Sleep"));
+    }
+  }
+}
 
 /**
- * @brief Initialize the controller
+ * @brief Initialize the controller. Which controls the states of the monitoring system.
  * 
  * @param p_hydration_player Pointer to dfplayer
  * @param p_hydration_monitor Pointer to the moiture sensor
@@ -40,7 +80,13 @@ void HydrateController::begin(HydratePlayer *p_hydration_player, HydrateMonitor 
     this->p_hydration_monitor = p_hydration_monitor;
     this->p_hydration_presence = p_hydration_presence;
 
+    p_hydration_controller = this;
+
     debug_timer.begin(PlantStates::DEBUG_TIME);
+}
+
+void HydrateController::set_state(PlantStates::MonitoringStates state){
+    this->state = state;
 }
 
 /**
@@ -49,7 +95,7 @@ void HydrateController::begin(HydratePlayer *p_hydration_player, HydrateMonitor 
  * When everything is fine it restarts the hydrate timer.
 */
 void HydrateController::on_hydrate_timer_finished(){
-    Serial.println(F("Hydrate timer finished"));
+    SerialLogger::p_serial_logger->log(F("Hydrate timer finished"), Debugger::DEBUG);
     if(p_hydration_monitor->readMoistureLevel() == hydrate_monitor::NULL_VALUE  ||
     p_hydration_monitor->readMoistureLevel() == hydrate_monitor::DRY ||
     p_hydration_monitor->readMoistureLevel()== hydrate_monitor::SOME_WATER){
@@ -66,8 +112,8 @@ void HydrateController::on_hydrate_timer_finished(){
  * If the user is not present it will restart the presence timer.
 */
 void HydrateController::on_precence_timer_finished(){
-    Serial.println(F("Presence timer finished"));
-    if(p_hydration_presence->isPersonMoving()){
+    SerialLogger::p_serial_logger->log(F("Presence timer finished"), Debugger::DEBUG);
+    if(p_hydration_presence->is_person_moving()){
         this->on_presence_detected();
     }else{
         presence_timer.start();
@@ -79,7 +125,7 @@ void HydrateController::on_precence_timer_finished(){
  * and the movement sensor detects movement. It will play the notification sound and set the state to NOTIFING.
 */
 void HydrateController::on_presence_detected(){
-    Serial.println(F("Presence detected"));
+    SerialLogger::p_serial_logger->log(F("Presence detected"), Debugger::WARNING);
     p_hydration_player->playTrack(1);
     state = PlantStates::NOTIFING;
 }
@@ -89,7 +135,7 @@ void HydrateController::on_presence_detected(){
  * It will check every 500ms if the player is still playing. If the player is still playing it will restart the player polling timer.
 */
 void HydrateController::on_notify(){
-    Serial.println(F("Notify finished"));
+    SerialLogger::p_serial_logger->log(F("Notify finished"), Debugger::DEBUG);
     if(p_hydration_player->isPlaying()){
         player_polling_timer.start();
     }else{
@@ -102,7 +148,7 @@ void HydrateController::on_notify(){
  * When the player is finished it will set the state to MONITORING and restart the hydrate timer.
 */
 void HydrateController::on_player_finished(){
-    Serial.println(F("Player finished"));
+    SerialLogger::p_serial_logger->log(F("Player finished"), Debugger::DEBUG);
     state = PlantStates::MONITORING;
     hydrate_timer.start();
 }
@@ -157,6 +203,7 @@ void HydrateController::loop(){
 
             if(hydrate_timer.fire()){
               this->on_hydrate_timer_finished();
+              this->print_state();
             }
             break;
         case PlantStates::PRESENCE:
@@ -174,8 +221,8 @@ void HydrateController::loop(){
             break;
     }
 
-    if(debug_timer.fire()){
-      print_state();
-      debug_timer.start();
-    }
+    // if(debug_timer.fire()){
+    //   print_state();
+    //   debug_timer.start();
+    // }
 }

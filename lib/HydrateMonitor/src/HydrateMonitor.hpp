@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#define MOISTURE_MAX 20
+#define MOISTURE_MAX 255
 #define MOISTURE_MIN 1
 
 
@@ -27,15 +27,19 @@ namespace hydrate_monitor{
 
   String moistureLevelToString(MoistureLevel moisture_level);
 }
+
 class HydrateMonitor {
 public:
   HydrateMonitor(uint8_t moisture_sensor_pin, uint8_t moisture_sensor_control_pin); // Konstruktor hinzugefügt
+  HydrateMonitor(); // Konstruktor hinzugefügt
   void begin();
   hydrate_monitor::MoistureLevel readMoistureLevel();
   
   hydrate_monitor::PlantValue plant_value;
 
   hydrate_monitor::MoistureLevel evaluteMoistureLevel(uint16_t moisture_value);
+
+ 
 
 private:
   uint8_t moisture_sensor_pin; // SoftwareSerial-Instanz hinzugefügt

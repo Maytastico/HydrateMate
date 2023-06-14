@@ -1,0 +1,36 @@
+{
+"name": "SerialLogger",
+"version": "1.0.0",
+"description": "This library allows you to log messages to the serial port. It is useful for debugging purposes.",
+"keywords": [
+    "plant",
+    "debug",
+    "dfplayer",
+    "HydrateMate",
+    "IoT"
+  ],
+  "frameworks": {
+    "arduino": {
+      "required": true
+    }
+  },
+  "platforms": [
+    "espressif8266",
+    "espressif32"
+  ],
+  "authors": [
+    {
+      "name": "Maytastico",
+      "email": "maytastico@hotmail.com"
+    }
+  ],
+  "homepage": "https://github.com/Maytastico/HydrateMate",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Maytastico/HydrateMate"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dfrobot/DFRobotDFPlayerMini": "1.0.5"
+  }
+} 

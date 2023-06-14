@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <FireTimer.h>
 
+#include "SerialLogger.hpp"
 #include "HydrateMonitor.hpp"
 #include "HydratePlayer.hpp"
 #include "HydratePresence.hpp"
@@ -16,7 +17,7 @@ namespace PlantStates{
   const int32_t PRESENCE_TIME = 2000;
   const int32_t PLAYER_POLLING_TIME = 500;
 
-  const int32_t DEBUG_TIME = 1000;
+  const int32_t DEBUG_TIME = 50000;
 
   enum MonitoringStates{
     INIT,
@@ -36,9 +37,11 @@ public:
   HydrateController(){};
   void begin(HydratePlayer *p_hydration_player, HydrateMonitor *p_hydration_monitor, HydratePresence *p_hydration_presence);
   void loop();
-
   void print_state();
+  void set_state(PlantStates::MonitoringStates state);
   
+  static void serialHandler(int argCnt, char **args);
+  static HydrateController *p_hydration_controller;
 
 private:
     FireTimer hydrate_timer;
