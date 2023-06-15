@@ -91,13 +91,13 @@ hydrate_monitor::MoistureLevel HydrateMonitor::evaluteMoistureLevel(uint16_t moi
 
   //Evaluate Errors
   if(moisture_value < MOISTURE_MIN){
-    Serial.println(F("Moisture Sensor not connected or in air!"));
+    Debugger::log(F("Moisture Sensor not connected or in air!"), Debugger::ERROR);
     temp_level = hydrate_monitor::NULL_VALUE;
     in_error = true;
   }
   else if (moisture_value > MOISTURE_MAX)
   {
-    Serial.println(F("Moisture Sensor returns unexpectatly value!"));
+    Debugger::log(F("Moisture Sensor returns unexpectatly value!"), Debugger::ERROR);
     temp_level = hydrate_monitor::UNEXPECTED_VALUE;
     in_error = true;
   }
@@ -111,9 +111,8 @@ hydrate_monitor::MoistureLevel HydrateMonitor::evaluteMoistureLevel(uint16_t moi
   temp_level = static_cast<hydrate_monitor::MoistureLevel>(maped_value);
   
   // Debugging message
-  Serial.print(F("Water Level: "));
-  Serial.println(hydrate_monitor::moistureLevelToString(temp_level));
-
+  Debugger::log(F("Water Level: "),  Debugger::DEBUG);
+  Debugger::log(hydrate_monitor::moistureLevelToString(temp_level), Debugger::DEBUG);
   return temp_level;
 }
 
@@ -124,14 +123,14 @@ hydrate_monitor::MoistureLevel HydrateMonitor::evaluteMoistureLevel(uint16_t moi
  * 
 */
 uint16_t HydrateMonitor::readMoistureValue(){
-  Serial.println(F("Reading Moisture Sensor"));
+  Debugger::log(F("Reading Moisture Sensor"), Debugger::DEBUG);
 
   digitalWrite(this->moisture_sensor_control_pin, HIGH);
   uint16_t moiture_value = analogRead(this->moisture_sensor_pin);
   digitalWrite(this->moisture_sensor_control_pin, LOW);
 
-  Serial.print(F("Moisture Sensor: "));
-  Serial.println(String(moiture_value));
+  Debugger::log(F("Moisture Sensor: "), Debugger::DEBUG);
+  Debugger::log(String(moiture_value), Debugger::DEBUG);
 
   return moiture_value;
 }

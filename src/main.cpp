@@ -32,12 +32,13 @@ void setup() {
   hydrate_controller.begin(&player, &plant_monitor, &presence_detection);
 
   cmd.add("m", hydrate_controller.serialHandler);
-  cmd.add("d", hello);
+  cmd.add("d", logger.serialHandler);
   cmd.add("p", player.serialHandler);
   cmd.add("v", player.serialHandler);
   cmd.add("t", player.serialHandler);
   cmd.add("args", arg_display);
 
+  logger.begin();
   player.playTrack(1);
 }
 

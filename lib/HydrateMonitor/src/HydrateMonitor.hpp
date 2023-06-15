@@ -2,9 +2,10 @@
 #define HYDRATEMONITOR_HPP
 
 #include <Arduino.h>
+#include <SerialLogger.hpp>
 
-#define MOISTURE_MAX 255
-#define MOISTURE_MIN 1
+#define MOISTURE_MAX 200
+#define MOISTURE_MIN 10
 
 
 #define MOISTURE_LEVEL_STATES 5

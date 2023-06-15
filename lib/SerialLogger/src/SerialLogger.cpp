@@ -1,26 +1,39 @@
 #include <SerialLogger.hpp>
 
+SerialLogger *SerialLogger::p_serial_logger = nullptr;
+
 
 void SerialLogger::serialHandler(int argCnt, char **args){
   if(p_serial_logger != nullptr){
     if(strcmp(args[1], "g") == 0){
-        Serial.print(p_serial_logger->get_debug_level());
+        Serial.print(Debugger::state_to_string(p_serial_logger->get_debug_level()));
     }else if (strcmp(args[1], "d") == 0){
         p_serial_logger->set_debug_level(Debugger::DEBUG);
+        Serial.println(F("Debug"));
     }else if (strcmp(args[1], "n") == 0){
         p_serial_logger->set_debug_level(Debugger::NONE);
+        Serial.println(F("None"));
     }else if (strcmp(args[1], "e") == 0){
         p_serial_logger->set_debug_level(Debugger::ERROR);
+        Serial.println(F("Error"));
     }else if (strcmp(args[1], "w") == 0){
         p_serial_logger->set_debug_level(Debugger::WARNING);
+        Serial.println(F("Warning"));
     }else if (strcmp(args[1], "i") == 0){
         p_serial_logger->set_debug_level(Debugger::INFO);
+        Serial.println(F("Info"));
     }
+  }else{
+    Serial.println(F("SerialLogger not initialized"));
   }
 }
 
+void SerialLogger::begin(){
+    p_serial_logger = this;
+}
+
 void SerialLogger::log(String message, Debugger::DebugLevels level){
-    if(debug_level >= Debugger::NONE){
+    if(debug_level > Debugger::NONE){
         switch (level)
         {
         case Debugger::DEBUG:
@@ -46,8 +59,12 @@ void SerialLogger::log(String message, Debugger::DebugLevels level){
     }
 }
 
-String SerialLogger::get_debug_level(){
-    return Debugger::state_to_string(debug_level);
+Debugger::DebugLevels SerialLogger::get_debug_level(){
+    return debug_level;
+}
+
+void SerialLogger::set_debug_level(Debugger::DebugLevels level){
+    debug_level = level;
 }
 
 namespace Debugger {
@@ -70,5 +87,11 @@ namespace Debugger {
             break;
         }
         return F("UNKNOWN");
+    }
+
+    void log(String message, DebugLevels level){
+        if(SerialLogger::p_serial_logger != nullptr){
+            SerialLogger::p_serial_logger->log(message, level);
+        }
     }
 }

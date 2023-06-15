@@ -203,7 +203,9 @@ void HydrateController::loop(){
 
             if(hydrate_timer.fire()){
               this->on_hydrate_timer_finished();
-              this->print_state();
+              if (SerialLogger::p_serial_logger->get_debug_level() == Debugger::DEBUG){
+                this->print_state();
+              }
             }
             break;
         case PlantStates::PRESENCE:
