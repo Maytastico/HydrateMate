@@ -1,52 +1,42 @@
 #include <Arduino.h>
-#include <HydratePlayer.hpp>
-#include <HydrateMonitor.hpp>
-#include <HydratePresence.hpp>
-#include <HydrateController.hpp>
 #include <SerialLogger.hpp>
 #include <cmdArduino.h>
+#include <DHT.h>
 
+const int PIN_DHT = 2;
+const int DHTTYPE = DHT22;
 
-HydratePlayer player(10,11);
-HydrateMonitor plant_monitor(A1, 9);
-HydratePresence presence_detection(8);
-
-HydrateController hydrate_controller;
+DHT dht(PIN_DHT, DHTTYPE);
 
 SerialLogger logger;
 
 void arg_display(int argCnt, char **args);
+void print_temperature(int argCnt, char **args);
+void print_humidity(int argCnt, char **args);
 
 void setup() {
   Serial.begin(115200);
   cmd.begin(115200);
 
-  player.begin();
+  dht.begin();
 
-  plant_monitor.begin();
-
-  plant_monitor.readMoistureLevel();
-
-  presence_detection.begin();
-
-  hydrate_controller.begin(&player, &plant_monitor, &presence_detection);
-
-  cmd.add("m", hydrate_controller.serialHandler);
-  cmd.add("d", logger.serialHandler);
-  cmd.add("p", player.serialHandler);
-  cmd.add("v", player.serialHandler);
-  cmd.add("t", player.serialHandler);
+  cmd.add("t", print_temperature);
+  cmd.add("h", print_humidity);
   cmd.add("args", arg_display);
 
   logger.begin();
-  player.playTrack(1);
 }
 
 void loop() {
-  hydrate_controller.loop();
-
   cmd.poll();
-  //player.loop();
+}
+
+void print_temperature(int argCnt, char **args){
+  Serial.println(dht.readTemperature());
+}
+
+void print_humidity(int argCnt, char **args){
+  Serial.println(dht.readHumidity());
 }
 
 void arg_display(int argCnt, char **args)
